@@ -9,6 +9,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { listActiveQuestionnaires, submitAnswers } from "../api/public";
 import { QuestionField } from "../components/QuestionField";
 import type { QuestionnaireWithQuestions } from "../types/domain";
@@ -81,9 +82,9 @@ export function PublicSurveyPage() {
   return (
     <div className="page">
       <div className="hero fade-in-up">
-        <span className="hero-icon" aria-hidden="true">
-          <ClipboardList size={26} />
-        </span>
+        <Link to="/admin" className="hero-icon" aria-label="Accès administrateur">
+          <ClipboardList size={26} aria-hidden="true" />
+        </Link>
         <h1>Rijam-panontaniana</h1>
         <p className="subtitle">ho an'ny Vahoaka Ankapobeny momba ny anjara asan'ny IB-C manoloana ny vanim-potoana nomerika</p>
       </div>
