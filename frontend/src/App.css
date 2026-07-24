@@ -1,0 +1,138 @@
+.page {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 1.25rem 0.75rem;
+  }
+}
+
+.page h1 {
+  margin-bottom: 0;
+}
+
+.subtitle {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.75;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 4rem;
+  font-family: inherit;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.questionnaire {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.question-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  min-width: 0;
+}
+
+.question-field label,
+.question-field legend {
+  font-weight: 600;
+}
+
+.option-choice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+}
+
+.question-list,
+.questionnaire-list,
+.submission-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.question-list li,
+.questionnaire-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.question-list li > div,
+.questionnaire-list li > div {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 480px) {
+  .question-list li,
+  .questionnaire-list li {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.submission-list li {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.submission-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.open-answer {
+  margin-top: 0.5rem;
+}
+
+.badge {
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--code-bg);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.error {
+  color: #e5484d;
+}
