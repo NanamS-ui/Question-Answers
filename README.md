@@ -2,7 +2,7 @@
 
 Site de questionnaires :
 
-- **Public** (sans connexion) : l'utilisateur renseigne nom/prénom/email, répond aux questionnaires actifs (radio, checkbox, select) et peut laisser un commentaire libre, puis envoie tout en une fois.
+- **Public** (sans connexion) : l'utilisateur renseigne nom/prénom, répond aux questionnaires actifs (radio, checkbox, select) et peut laisser un commentaire libre, puis envoie tout en une fois.
 - **Admin** (`/admin`, sans authentification pour l'instant) : création des questionnaires et de leurs questions (libellé + type de réponse), et consultation de la liste des utilisateurs avec leurs réponses.
 
 ## Backend
@@ -29,7 +29,7 @@ npm run dev             # démarre le serveur en mode dev (http://localhost:4000
 Public :
 
 - `GET /api/public/questionnaires` — questionnaires actifs avec leurs questions
-- `POST /api/public/submissions` — envoi d'une réponse (`{ nom, prenom, email, open_answer?, answers: [{ question_id, value }] }`)
+- `POST /api/public/submissions` — envoi d'une réponse (`{ nom, prenom, open_answer?, answers: [{ question_id, value }] }`)
 
 Admin :
 
@@ -51,7 +51,7 @@ Le schéma SQL complet est dans [`backend/sql/schema.sql`](backend/sql/schema.sq
 
 - `questionnaires` — un questionnaire (titre, description, actif ou non)
 - `questions` — les questions d'un questionnaire (libellé, type `radio`/`checkbox`/`select`, options)
-- `submissions` — une soumission d'un visiteur (nom, prénom, email, commentaire libre)
+- `submissions` — une soumission d'un visiteur (nom, prénom, commentaire libre)
 - `answers` — les réponses d'une soumission, une par question répondue
 
 Le backend utilise la clé `service_role` (jamais exposée au frontend) pour accéder directement à la base sans passer par Row Level Security.
@@ -77,7 +77,7 @@ npm run dev             # démarre le serveur en mode dev (http://localhost:5173
 
 ### Pages
 
-- `/` — page publique : formulaire nom/prénom/email + tous les questionnaires actifs + commentaire libre + bouton Envoyer
+- `/` — page publique : formulaire nom/prénom + tous les questionnaires actifs + commentaire libre + bouton Envoyer
 - `/admin` — liste des questionnaires + création d'un nouveau questionnaire
 - `/admin/questionnaires/:id` — gestion des questions d'un questionnaire (ajout/suppression, activer/désactiver)
 - `/admin/submissions` — liste des utilisateurs ayant répondu, avec le détail de leurs réponses
@@ -124,9 +124,10 @@ Sur [vercel.com](https://vercel.com) → **Add New → Project** → importer le
 - **Environment Variables** :
   - `SUPABASE_URL`
   - `SUPABASE_SERVICE_ROLE_KEY`
-  - `CORS_ORIGIN` — provisoirement `*`, à restreindre à l'URL du frontend une fois connue (étape 3)
 
 Déployer → noter l'URL générée (ex. `https://question-answers-backend.vercel.app`).
+
+> Le CORS est ouvert à toutes les origines (`origin: "*"` dans `src/app.ts`) — pas de variable d'environnement à gérer pour ça. C'est volontairement permissif tant qu'il n'y a pas d'authentification/cookies à protéger ; à resserrer si l'API devient sensible.
 
 ### 2. Déployer le frontend
 
@@ -139,11 +140,7 @@ Nouveau projet Vercel, même repo :
 
 Déployer → noter l'URL du frontend (ex. `https://question-answers.vercel.app`).
 
-### 3. Boucler le CORS
-
-Retourner dans le projet **backend** sur Vercel → Settings → Environment Variables → mettre à jour `CORS_ORIGIN` avec l'URL exacte du frontend (étape 2), puis **redeploy**.
-
-### 4. Vérifier
+### 3. Vérifier
 
 - `https://<backend>.vercel.app/health` doit répondre `{"status":"ok"}`
 - Le frontend déployé doit afficher les questionnaires actifs et permettre l'envoi de réponses

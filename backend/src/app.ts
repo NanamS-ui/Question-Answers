@@ -8,11 +8,9 @@ import { healthRouter } from "./routes/health";
 import { publicQuestionnairesRouter } from "./routes/public/questionnaires";
 import { publicSubmissionsRouter } from "./routes/public/submissions";
 
-const corsOrigin = process.env.CORS_ORIGIN?.split(",") ?? "*";
-
 const app = express();
 
-app.use(cors({ origin: corsOrigin }));
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 app.use("/health", healthRouter);
