@@ -20,7 +20,7 @@ export function AdminDashboardPage() {
       setError(null);
       setQuestionnaires(await listQuestionnaires());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Olana tsy fantatra");
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setLoading(false);
     }
@@ -40,7 +40,7 @@ export function AdminDashboardPage() {
       setDescription("");
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Olana tsy fantatra");
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setCreating(false);
     }
@@ -53,49 +53,46 @@ export function AdminDashboardPage() {
 
   return (
     <div className="page">
-      <h1>Fitantanana</h1>
-      <p>
-        <Link to="/admin/submissions">Jereo ny valin-tenin'ny mpampiasa</Link>
-      </p>
+      <h1>Questionnaires</h1>
 
-      <form onSubmit={handleCreate} className="questionnaire-form">
-        <h2>Rijam-panontaniana vaovao</h2>
+      <form onSubmit={handleCreate} className="card">
+        <h2>Nouveau questionnaire</h2>
         <input
           type="text"
-          placeholder="Lohateny"
+          placeholder="Titre"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           disabled={creating}
         />
         <textarea
-          placeholder="Famaritana (tsy voatery)"
+          placeholder="Description (optionnel)"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={creating}
         />
-        <button type="submit" disabled={creating || !title.trim()}>
-          {creating ? "Eo am-pamoronana..." : "Mamorona"}
+        <button type="submit" className="btn-primary" disabled={creating || !title.trim()}>
+          {creating ? "Création..." : "Créer"}
         </button>
       </form>
 
-      {error && <p className="error">Olana: {error}</p>}
+      {error && <p className="error">Erreur : {error}</p>}
 
-      <h2>Rijam-panontaniana</h2>
+      <h2>Tous les questionnaires</h2>
       {loading ? (
-        <p>Miandry kely...</p>
+        <p>Chargement...</p>
       ) : (
         <ul className="questionnaire-list">
           {questionnaires.map((q) => (
-            <li key={q.id}>
+            <li key={q.id} className="card">
               <div>
                 <Link to={`/admin/questionnaires/${q.id}`}>
                   <strong>{q.title}</strong>
                 </Link>
-                <span> — fanontaniana {q.questions.length}</span>
-                {!q.is_active && <span className="badge">tsy mavitrika</span>}
+                <span className="submission-meta"> — {q.questions.length} question(s)</span>
+                {!q.is_active && <span className="badge">inactif</span>}
               </div>
-              <button type="button" onClick={() => handleDelete(q.id)}>
-                Fafao
+              <button type="button" className="btn-danger" onClick={() => handleDelete(q.id)}>
+                Supprimer
               </button>
             </li>
           ))}

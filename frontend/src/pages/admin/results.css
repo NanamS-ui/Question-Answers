@@ -1,0 +1,133 @@
+/* Forced light "report" surface — this view is meant to be read/printed/exported
+   as a static PDF, independent of the app's light/dark theme. */
+.results-page {
+  --surface: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --track: #e1e0d9;
+  --accent: #5b4fe9;
+  --border: #e1e0d9;
+
+  background: var(--surface);
+  color: var(--text-primary);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.results-page h1 {
+  color: var(--text-primary);
+}
+
+.results-summary {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.results-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-picker {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.chart-picker-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.chart-picker-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.chart-picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.chart-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.results-question {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+  background: var(--surface);
+}
+
+.results-question h3 {
+  margin: 0 0 0.25rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.results-meta {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.results-empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(90px, 180px) 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.bar-label {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  overflow-wrap: break-word;
+}
+
+.bar-track {
+  background: var(--track);
+  border-radius: 4px;
+  height: 18px;
+}
+
+.bar-fill {
+  background: var(--accent);
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  min-width: 2px;
+}
+
+.bar-value {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 72px;
+  text-align: right;
+  white-space: nowrap;
+}

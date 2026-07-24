@@ -62,7 +62,7 @@ export function QuestionField({ question, value, onChange }: Props) {
         onChange={(e) => onChange(e.target.value)}
       >
         <option value="" disabled>
-          Misafidiana...
+          Choisir...
         </option>
         {question.options.map((option) => (
           <option key={option} value={option}>

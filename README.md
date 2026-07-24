@@ -80,6 +80,7 @@ npm run dev             # démarre le serveur en mode dev (http://localhost:5173
 - `/` — page publique : formulaire nom/prénom + tous les questionnaires actifs + commentaire libre + bouton Envoyer
 - `/admin` — liste des questionnaires + création d'un nouveau questionnaire
 - `/admin/questionnaires/:id` — gestion des questions d'un questionnaire (ajout/suppression, activer/désactiver)
+- `/admin/questionnaires/:id/results` — résultats agrégés (un graphique en barres par question, façon Google/Microsoft Forms) + export PDF
 - `/admin/submissions` — liste des utilisateurs ayant répondu, avec le détail de leurs réponses
 
 ### Structure
@@ -87,7 +88,9 @@ npm run dev             # démarre le serveur en mode dev (http://localhost:5173
 - `src/api/` — clients fetch typés vers l'API backend (`public.ts`, `admin.ts`)
 - `src/types/domain.ts` — types partagés (Questionnaire, Question, Submission, Answer...)
 - `src/components/QuestionField.tsx` — rendu d'une question selon son type (radio/checkbox/select)
+- `src/components/BarResultsChart.tsx` — graphique en barres (comptage + %) pour une question
 - `src/pages/` — pages publique et admin
+- `src/pages/admin/AdminQuestionnaireResultsPage.tsx` — agrège les réponses par question et exporte la vue en PDF (`html2canvas` + `jspdf`, généré côté client, aucun appel backend supplémentaire)
 
 ## Lancer le projet complet
 

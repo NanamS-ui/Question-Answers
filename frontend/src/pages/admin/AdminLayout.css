@@ -1,0 +1,45 @@
+.admin-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.9rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-nav-brand {
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.admin-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.admin-nav-links a {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.admin-nav-links a:hover {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.admin-nav-links a.active {
+  color: var(--primary);
+}
+
+.admin-nav-public {
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--border);
+}

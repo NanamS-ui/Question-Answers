@@ -15,31 +15,38 @@ export function AdminSubmissionsPage() {
   useEffect(() => {
     listSubmissions()
       .then(setSubmissions)
-      .catch((err) => setError(err instanceof Error ? err.message : "Olana tsy fantatra"))
+      .catch((err) => setError(err instanceof Error ? err.message : "Erreur inconnue"))
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="page">
-      <p>
-        <Link to="/admin">&larr; Miverina</Link>
+      <p className="back-link">
+        <Link to="/admin">&larr; Retour</Link>
       </p>
-      <h1>Valin-tenin'ny mpampiasa</h1>
+      <h1>Réponses des utilisateurs</h1>
 
-      {error && <p className="error">Olana: {error}</p>}
+      {error && <p className="error">Erreur : {error}</p>}
       {loading ? (
-        <p>Miandry kely...</p>
+        <p>Chargement...</p>
       ) : submissions.length === 0 ? (
-        <p>Mbola tsy misy valiny amin'izao fotoana izao.</p>
+        <p>Aucune réponse pour le moment.</p>
       ) : (
         <ul className="submission-list">
           {submissions.map((submission) => (
-            <li key={submission.id}>
+            <li key={submission.id} className="card">
               <div className="submission-header">
-                <strong>
-                  {submission.prenom} {submission.nom}
-                </strong>
-                <span> — {new Date(submission.created_at).toLocaleString()}</span>
+                <span className="avatar" aria-hidden="true">
+                  {submission.prenom.charAt(0).toUpperCase()}
+                </span>
+                <div className="submission-header-text">
+                  <strong>
+                    {submission.prenom} {submission.nom}
+                  </strong>
+                  <span className="submission-meta">
+                    {new Date(submission.created_at).toLocaleString()}
+                  </span>
+                </div>
               </div>
               <ul>
                 {submission.answers.map((answer) => (
@@ -51,7 +58,7 @@ export function AdminSubmissionsPage() {
               </ul>
               {submission.open_answer && (
                 <p className="open-answer">
-                  <em>Hevitra na fanamarihana hafa :</em> {submission.open_answer}
+                  <em>Commentaire libre :</em> {submission.open_answer}
                 </p>
               )}
             </li>

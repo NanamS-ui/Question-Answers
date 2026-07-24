@@ -18,7 +18,7 @@ export function PublicSurveyPage() {
   useEffect(() => {
     listActiveQuestionnaires()
       .then(setQuestionnaires)
-      .catch((err) => setError(err instanceof Error ? err.message : "Nisy olana tsy fantatra"))
+      .catch((err) => setError(err instanceof Error ? err.message : "Erreur inconnue"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -39,40 +39,56 @@ export function PublicSurveyPage() {
       });
       setSubmitted(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Nisy olana tsy fantatra");
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setSubmitting(false);
     }
   }
 
-  if (loading) return <p>Miandry kely...</p>;
+  if (loading) return <p className="page">Chargement...</p>;
 
   if (submitted) {
     return (
       <div className="page">
-        <h1>Misaotra !</h1>
-        <p>Voaray tsara ny valin-teninao.</p>
+        <div className="card success-screen">
+          <span className="success-badge" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 13l4 4L19 7"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+          <h1>Merci !</h1>
+          <p>Vos réponses ont bien été envoyées.</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="page">
-      <h1>Rijam-panontaniana</h1>
-      <p className="subtitle">ho an'ny Vahoaka Ankapobeny momba ny anjara asan'ny IB-C manoloana ny vanim-potoana nomerika</p>
-      <form onSubmit={handleSubmit} className="survey-form">
-        <fieldset className="identity">
-          <legend>Mombamomba anao</legend>
+      <div className="hero">
+        <h1>Rijam-panontaniana</h1>
+        <p className="subtitle">ho an'ny Vahoaka Ankapobeny momba ny anjara asan'ny IB-C manoloana ny vanim-potoana nomerika</p>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <fieldset className="identity card">
+          <legend>Vos informations</legend>
           <input
             type="text"
-            placeholder="Anarana"
+            placeholder="Nom"
             value={nom}
             onChange={(e) => setNom(e.target.value)}
             required
           />
           <input
             type="text"
-            placeholder="Fanampin'anarana"
+            placeholder="Prénom"
             value={prenom}
             onChange={(e) => setPrenom(e.target.value)}
             required
@@ -80,13 +96,18 @@ export function PublicSurveyPage() {
         </fieldset>
 
         {questionnaires.length === 0 && (
-          <p>Tsy misy rijam-panontaniana azo valiana amin'izao fotoana izao.</p>
+          <p>Aucun questionnaire disponible pour le moment.</p>
         )}
 
-        {questionnaires.map((questionnaire) => (
-          <section key={questionnaire.id} className="questionnaire">
-            <h2>{questionnaire.title}</h2>
-            {questionnaire.description && <p>{questionnaire.description}</p>}
+        {questionnaires.map((questionnaire, index) => (
+          <section key={questionnaire.id} className="questionnaire card">
+            <div className="questionnaire-heading">
+              <span className="questionnaire-index">{index + 1}</span>
+              <h2>{questionnaire.title}</h2>
+            </div>
+            {questionnaire.description && (
+              <p className="questionnaire-description">{questionnaire.description}</p>
+            )}
             {questionnaire.questions.map((question) => (
               <QuestionField
                 key={question.id}
@@ -100,19 +121,21 @@ export function PublicSurveyPage() {
           </section>
         ))}
 
-        <div className="question-field">
-          <label htmlFor="open-answer">Hevitra na fanamarihana hafa</label>
-          <textarea
-            id="open-answer"
-            value={openAnswer}
-            onChange={(e) => setOpenAnswer(e.target.value)}
-          />
+        <div className="card">
+          <div className="question-field">
+            <label htmlFor="open-answer">Un commentaire à ajouter ?</label>
+            <textarea
+              id="open-answer"
+              value={openAnswer}
+              onChange={(e) => setOpenAnswer(e.target.value)}
+            />
+          </div>
         </div>
 
-        {error && <p className="error">Olana: {error}</p>}
+        {error && <p className="error">Erreur : {error}</p>}
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Mandefa..." : "Alefa"}
+        <button type="submit" className="btn-primary btn-lg" disabled={submitting}>
+          {submitting ? "Envoi..." : "Envoyer"}
         </button>
       </form>
     </div>

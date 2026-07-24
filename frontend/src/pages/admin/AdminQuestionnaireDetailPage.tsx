@@ -1,17 +1,18 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  addQuestion,
-  deleteQuestion,
-  getQuestionnaire,
-  updateQuestionnaire,
-} from "../../api/admin";
+import { addQuestion, deleteQuestion, getQuestionnaire } from "../../api/admin";
 import type { QuestionnaireWithQuestions, QuestionType } from "../../types/domain";
 
 const TYPE_LABELS: Record<QuestionType, string> = {
-  radio: "Safidy tokana (radio)",
-  checkbox: "Safidy maro (checkbox)",
-  select: "Lisitra mivelatra (select)",
+  radio: "Choix unique (radio)",
+  checkbox: "Choix multiple (checkbox)",
+  select: "Liste déroulante (select)",
+};
+
+const TYPE_PILL_CLASS: Record<QuestionType, string> = {
+  radio: "type-pill type-pill--radio",
+  checkbox: "type-pill type-pill--checkbox",
+  select: "type-pill type-pill--select",
 };
 
 export function AdminQuestionnaireDetailPage() {
@@ -30,7 +31,7 @@ export function AdminQuestionnaireDetailPage() {
       setError(null);
       setQuestionnaire(await getQuestionnaire(id));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Olana tsy fantatra");
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     }
   }
 
@@ -38,19 +39,13 @@ export function AdminQuestionnaireDetailPage() {
     refresh();
   }, [id]);
 
-  async function handleToggleActive() {
-    if (!questionnaire) return;
-    await updateQuestionnaire(questionnaire.id, { is_active: !questionnaire.is_active });
-    await refresh();
-  }
-
   async function handleAddQuestion(e: FormEvent) {
     e.preventDefault();
     if (!id || !libelle.trim()) return;
 
     const cleanedOptions = options.map((o) => o.trim()).filter(Boolean);
     if (cleanedOptions.length < 2) {
-      setError("Mila safidy 2 farafahakeliny");
+      setError("Il faut au moins 2 options");
       return;
     }
 
@@ -63,7 +58,7 @@ export function AdminQuestionnaireDetailPage() {
       setOptions(["", ""]);
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Olana tsy fantatra");
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
       setSaving(false);
     }
@@ -75,47 +70,50 @@ export function AdminQuestionnaireDetailPage() {
     await refresh();
   }
 
-  if (!questionnaire) return <div className="page">{error ?? "Miandry kely..."}</div>;
+  if (!questionnaire) return <div className="page">{error ?? "Chargement..."}</div>;
 
   return (
     <div className="page">
-      <p>
-        <Link to="/admin">&larr; Miverina</Link>
+      <p className="back-link">
+        <Link to="/admin">&larr; Retour</Link>
       </p>
       <h1>{questionnaire.title}</h1>
-      {questionnaire.description && <p>{questionnaire.description}</p>}
-      <button type="button" onClick={handleToggleActive}>
-        {questionnaire.is_active ? "Ajanony" : "Ampandehano"}
-      </button>
+      {questionnaire.description && <p className="questionnaire-description">{questionnaire.description}</p>}
+      <p className="section-link">
+        <Link to={`/admin/questionnaires/${questionnaire.id}/results`}>
+          Voir les résultats
+        </Link>
+      </p>
 
-      <h2>Fanontaniana</h2>
+      <h2>Questions</h2>
       <ul className="question-list">
         {questionnaire.questions.map((q) => (
-          <li key={q.id}>
+          <li key={q.id} className="card">
             <div>
               <strong>{q.libelle}</strong>
               <p>
-                {TYPE_LABELS[q.type]} — {q.options.join(", ")}
+                <span className={TYPE_PILL_CLASS[q.type]}>{TYPE_LABELS[q.type]}</span>
+                <span className="submission-meta"> {q.options.join(", ")}</span>
               </p>
             </div>
-            <button type="button" onClick={() => handleDeleteQuestion(q.id)}>
-              Fafao
+            <button type="button" className="btn-danger" onClick={() => handleDeleteQuestion(q.id)}>
+              Supprimer
             </button>
           </li>
         ))}
       </ul>
 
-      <form onSubmit={handleAddQuestion} className="question-form">
-        <h3>Hampiditra fanontaniana</h3>
+      <form onSubmit={handleAddQuestion} className="card">
+        <h3>Ajouter une question</h3>
         <input
           type="text"
-          placeholder="Fanontaniana"
+          placeholder="Question"
           value={libelle}
           onChange={(e) => setLibelle(e.target.value)}
           disabled={saving}
         />
         <select
-          aria-label="Karazana valiny"
+          aria-label="Type de réponse"
           value={type}
           onChange={(e) => setType(e.target.value as QuestionType)}
           disabled={saving}
@@ -131,7 +129,7 @@ export function AdminQuestionnaireDetailPage() {
           <input
             key={i}
             type="text"
-            placeholder={`Safidy ${i + 1}`}
+            placeholder={`Option ${i + 1}`}
             value={option}
             disabled={saving}
             onChange={(e) =>
@@ -141,16 +139,17 @@ export function AdminQuestionnaireDetailPage() {
         ))}
         <button
           type="button"
+          className="btn-ghost"
           onClick={() => setOptions((prev) => [...prev, ""])}
           disabled={saving}
         >
-          + Safidy
+          + Option
         </button>
 
-        {error && <p className="error">Olana: {error}</p>}
+        {error && <p className="error">Erreur : {error}</p>}
 
-        <button type="submit" disabled={saving || !libelle.trim()}>
-          {saving ? "Eo am-panampiana..." : "Ampio ny fanontaniana"}
+        <button type="submit" className="btn-primary" disabled={saving || !libelle.trim()}>
+          {saving ? "Ajout..." : "Ajouter la question"}
         </button>
       </form>
     </div>
