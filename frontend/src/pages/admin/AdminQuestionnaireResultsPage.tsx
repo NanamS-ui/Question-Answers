@@ -1,14 +1,18 @@
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { ArrowLeft, ChartPie, Download, Loader2, SlidersHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getQuestionnaire, listSubmissions } from "../../api/admin";
 import { BarResultsChart } from "../../components/BarResultsChart";
+import { PieResultsChart } from "../../components/PieResultsChart";
 import type {
   QuestionnaireWithQuestions,
   SubmissionWithAnswers,
 } from "../../types/domain";
 import "./results.css";
+
+type ChartType = "bar" | "pie" | "donut";
 
 export function AdminQuestionnaireResultsPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +22,7 @@ export function AdminQuestionnaireResultsPage() {
   const [error, setError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<string>>(new Set());
+  const [chartType, setChartType] = useState<ChartType>("bar");
   const reportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -91,7 +96,14 @@ export function AdminQuestionnaireResultsPage() {
     }
   }
 
-  if (loading) return <div className="page">Chargement...</div>;
+  if (loading) {
+    return (
+      <div className="page loading-state">
+        <Loader2 size={18} className="icon-spin" aria-hidden="true" />
+        Chargement...
+      </div>
+    );
+  }
   if (error || !questionnaire) {
     return <div className="page error">Erreur: {error}</div>;
   }
@@ -105,18 +117,47 @@ export function AdminQuestionnaireResultsPage() {
   return (
     <div className="page">
       <p className="back-link">
-        <Link to={`/admin/questionnaires/${questionnaire.id}`}>&larr; Retour</Link>
+        <Link to={`/admin/questionnaires/${questionnaire.id}`}>
+          <ArrowLeft size={16} aria-hidden="true" /> Retour
+        </Link>
       </p>
 
       <div className="results-actions">
         <button type="button" className="btn-primary" onClick={handleExportPdf} disabled={exporting}>
-          {exporting ? "Export..." : "Exporter en PDF"}
+          {exporting ? (
+            <>
+              <Loader2 size={18} className="icon-spin" aria-hidden="true" />
+              Export...
+            </>
+          ) : (
+            <>
+              <Download size={18} aria-hidden="true" />
+              Exporter en PDF
+            </>
+          )}
         </button>
       </div>
 
       {questionnaire.questions.length > 0 && (
         <div className="chart-picker">
-          <p className="chart-picker-title">Graphiques à afficher :</p>
+          <div className="chart-type-row">
+            <label htmlFor="chart-type-select" className="chart-type-label">
+              <ChartPie size={16} aria-hidden="true" /> Type de graphique
+            </label>
+            <select
+              id="chart-type-select"
+              value={chartType}
+              onChange={(e) => setChartType(e.target.value as ChartType)}
+            >
+              <option value="bar">Barres</option>
+              <option value="pie">Camembert</option>
+              <option value="donut">Anneau</option>
+            </select>
+          </div>
+
+          <p className="chart-picker-title">
+            <SlidersHorizontal size={16} aria-hidden="true" /> Graphiques à afficher :
+          </p>
           <div className="chart-picker-controls">
             <button type="button" className="btn-ghost" onClick={selectAll}>
               Tout sélectionner
@@ -165,16 +206,32 @@ export function AdminQuestionnaireResultsPage() {
               }
             }
 
+            const chartData = question.options.map((label) => ({
+              label,
+              count: counts.get(label) ?? 0,
+            }));
+            const note = question.type === "checkbox" ? "plusieurs réponses possibles" : undefined;
+
+            if (chartType === "bar") {
+              return (
+                <BarResultsChart
+                  key={question.id}
+                  title={question.libelle}
+                  note={note}
+                  data={chartData}
+                  totalRespondents={answersForQuestion.length}
+                />
+              );
+            }
+
             return (
-              <BarResultsChart
+              <PieResultsChart
                 key={question.id}
                 title={question.libelle}
-                note={question.type === "checkbox" ? "plusieurs réponses possibles" : undefined}
-                data={question.options.map((label) => ({
-                  label,
-                  count: counts.get(label) ?? 0,
-                }))}
+                note={note}
+                data={chartData}
                 totalRespondents={answersForQuestion.length}
+                donut={chartType === "donut"}
               />
             );
           })

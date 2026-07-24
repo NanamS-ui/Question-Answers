@@ -13,6 +13,9 @@
 }
 
 .admin-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 700;
   color: var(--text-h);
 }
@@ -25,9 +28,13 @@
 }
 
 .admin-nav-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   color: var(--text-muted);
   font-weight: 600;
   font-size: 0.9rem;
+  transition: color 0.15s;
 }
 
 .admin-nav-links a:hover {

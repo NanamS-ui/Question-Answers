@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AdminDashboardPage } from "./pages/admin/AdminDashboardPage";
 import { AdminLayout } from "./pages/admin/AdminLayout";
+import { AdminNewQuestionnairePage } from "./pages/admin/AdminNewQuestionnairePage";
 import { AdminQuestionnaireDetailPage } from "./pages/admin/AdminQuestionnaireDetailPage";
 import { AdminQuestionnaireResultsPage } from "./pages/admin/AdminQuestionnaireResultsPage";
 import { AdminSubmissionsPage } from "./pages/admin/AdminSubmissionsPage";
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<PublicSurveyPage />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboardPage />} />
+          <Route path="new" element={<AdminNewQuestionnairePage />} />
           <Route path="questionnaires/:id" element={<AdminQuestionnaireDetailPage />} />
           <Route
             path="questionnaires/:id/results"

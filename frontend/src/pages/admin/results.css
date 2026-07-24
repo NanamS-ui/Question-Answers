@@ -42,7 +42,32 @@
   margin-right: auto;
 }
 
+.chart-type-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--border);
+}
+
+.chart-type-row select {
+  width: auto;
+}
+
+.chart-type-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
 .chart-picker-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
@@ -129,5 +154,57 @@
   font-variant-numeric: tabular-nums;
   min-width: 72px;
   text-align: right;
+  white-space: nowrap;
+}
+
+.pie-chart-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.pie-chart-row svg {
+  flex-shrink: 0;
+}
+
+.pie-donut-hole {
+  fill: var(--surface);
+}
+
+.pie-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 160px;
+}
+
+.pie-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.pie-legend-swatch {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.pie-legend-label {
+  color: var(--text-secondary);
+  flex: 1;
+  overflow-wrap: break-word;
+}
+
+.pie-legend-value {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }

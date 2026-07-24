@@ -1,3 +1,13 @@
+import {
+  AlertCircle,
+  CheckCircle2,
+  ClipboardList,
+  Loader2,
+  MessageSquare,
+  PackageOpen,
+  Send,
+  UserRound,
+} from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { listActiveQuestionnaires, submitAnswers } from "../api/public";
 import { QuestionField } from "../components/QuestionField";
@@ -45,22 +55,21 @@ export function PublicSurveyPage() {
     }
   }
 
-  if (loading) return <p className="page">Chargement...</p>;
+  if (loading) {
+    return (
+      <p className="page loading-state">
+        <Loader2 size={18} className="icon-spin" aria-hidden="true" />
+        Chargement...
+      </p>
+    );
+  }
 
   if (submitted) {
     return (
       <div className="page">
-        <div className="card success-screen">
-          <span className="success-badge" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M5 13l4 4L19 7"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+        <div className="card success-screen fade-in-up">
+          <span className="success-badge scale-in" aria-hidden="true">
+            <CheckCircle2 size={36} strokeWidth={2} />
           </span>
           <h1>Merci !</h1>
           <p>Vos réponses ont bien été envoyées.</p>
@@ -71,36 +80,51 @@ export function PublicSurveyPage() {
 
   return (
     <div className="page">
-      <div className="hero">
+      <div className="hero fade-in-up">
+        <span className="hero-icon" aria-hidden="true">
+          <ClipboardList size={26} />
+        </span>
         <h1>Rijam-panontaniana</h1>
         <p className="subtitle">ho an'ny Vahoaka Ankapobeny momba ny anjara asan'ny IB-C manoloana ny vanim-potoana nomerika</p>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <fieldset className="identity card">
+        <fieldset className="identity card fade-in-up">
           <legend>Vos informations</legend>
-          <input
-            type="text"
-            placeholder="Nom"
-            value={nom}
-            onChange={(e) => setNom(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Prénom"
-            value={prenom}
-            onChange={(e) => setPrenom(e.target.value)}
-            required
-          />
+          <div className="input-icon-wrapper">
+            <UserRound size={18} className="input-icon" aria-hidden="true" />
+            <input
+              type="text"
+              placeholder="Nom"
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-icon-wrapper">
+            <UserRound size={18} className="input-icon" aria-hidden="true" />
+            <input
+              type="text"
+              placeholder="Prénom"
+              value={prenom}
+              onChange={(e) => setPrenom(e.target.value)}
+              required
+            />
+          </div>
         </fieldset>
 
         {questionnaires.length === 0 && (
-          <p>Aucun questionnaire disponible pour le moment.</p>
+          <div className="empty-state">
+            <PackageOpen size={32} aria-hidden="true" />
+            <p>Aucun questionnaire disponible pour le moment.</p>
+          </div>
         )}
 
         {questionnaires.map((questionnaire, index) => (
-          <section key={questionnaire.id} className="questionnaire card">
+          <section
+            key={questionnaire.id}
+            className={`questionnaire card fade-in-up delay-${Math.min(index, 5)}`}
+          >
             <div className="questionnaire-heading">
               <span className="questionnaire-index">{index + 1}</span>
               <h2>{questionnaire.title}</h2>
@@ -121,9 +145,12 @@ export function PublicSurveyPage() {
           </section>
         ))}
 
-        <div className="card">
+        <div className="card fade-in-up">
           <div className="question-field">
-            <label htmlFor="open-answer">Un commentaire à ajouter ?</label>
+            <label htmlFor="open-answer">
+              <MessageSquare size={16} className="label-icon" aria-hidden="true" />
+              Un commentaire à ajouter ?
+            </label>
             <textarea
               id="open-answer"
               value={openAnswer}
@@ -132,10 +159,25 @@ export function PublicSurveyPage() {
           </div>
         </div>
 
-        {error && <p className="error">Erreur : {error}</p>}
+        {error && (
+          <p className="error fade-in">
+            <AlertCircle size={16} aria-hidden="true" />
+            Erreur : {error}
+          </p>
+        )}
 
         <button type="submit" className="btn-primary btn-lg" disabled={submitting}>
-          {submitting ? "Envoi..." : "Envoyer"}
+          {submitting ? (
+            <>
+              <Loader2 size={18} className="icon-spin" aria-hidden="true" />
+              Envoi...
+            </>
+          ) : (
+            <>
+              <Send size={18} aria-hidden="true" />
+              Envoyer
+            </>
+          )}
         </button>
       </form>
     </div>
