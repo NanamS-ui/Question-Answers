@@ -39,7 +39,6 @@ export function AdminSubmissionsPage() {
                 <strong>
                   {submission.prenom} {submission.nom}
                 </strong>
-                <span> — {submission.email}</span>
                 <span> — {new Date(submission.created_at).toLocaleString()}</span>
               </div>
               <ul>

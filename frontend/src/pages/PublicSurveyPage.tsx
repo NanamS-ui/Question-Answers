@@ -12,7 +12,6 @@ export function PublicSurveyPage() {
 
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
-  const [email, setEmail] = useState("");
   const [openAnswer, setOpenAnswer] = useState("");
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
 
@@ -32,7 +31,6 @@ export function PublicSurveyPage() {
       await submitAnswers({
         nom,
         prenom,
-        email,
         open_answer: openAnswer || undefined,
         answers: Object.entries(answers).map(([question_id, value]) => ({
           question_id,
@@ -79,13 +77,6 @@ export function PublicSurveyPage() {
             onChange={(e) => setPrenom(e.target.value)}
             required
           />
-          {/* <input
-            type="email"
-            placeholder="Mailaka"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          /> */}
         </fieldset>
 
         {questionnaires.length === 0 && (

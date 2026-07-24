@@ -3,14 +3,6 @@ import { Question, QuestionType } from "../types/domain";
 
 export const QUESTION_TYPES: QuestionType[] = ["radio", "checkbox", "select"];
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-export function assertValidEmail(email: string) {
-  if (!EMAIL_RE.test(email)) {
-    throw new HttpError(400, "Adresse email invalide");
-  }
-}
-
 export function assertValidQuestionType(type: string): asserts type is QuestionType {
   if (!QUESTION_TYPES.includes(type as QuestionType)) {
     throw new HttpError(

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { supabase } from "../../config/supabase";
 import { HttpError } from "../../middleware/errorHandler";
 import { AnswerInput, Question, SubmissionInput } from "../../types/domain";
-import { assertValidEmail, validateAnswerValue } from "../../utils/validation";
+import { validateAnswerValue } from "../../utils/validation";
 
 function assertValidInput(body: unknown): asserts body is SubmissionInput {
   const b = body as Partial<SubmissionInput> | null;
@@ -11,8 +11,6 @@ function assertValidInput(body: unknown): asserts body is SubmissionInput {
   }
   if (!b.nom?.trim()) throw new HttpError(400, "nom est requis");
   if (!b.prenom?.trim()) throw new HttpError(400, "prenom est requis");
-  if (!b.email?.trim()) throw new HttpError(400, "email est requis");
-  assertValidEmail(b.email);
   if (!Array.isArray(b.answers)) {
     throw new HttpError(400, "answers doit être un tableau");
   }
@@ -29,7 +27,7 @@ export async function createSubmission(
     return next(err);
   }
 
-  const { nom, prenom, email, open_answer, answers } = req.body as SubmissionInput;
+  const { nom, prenom, open_answer, answers } = req.body as SubmissionInput;
 
   const questionIds = answers.map((a: AnswerInput) => a.question_id);
   let questions: Question[] = [];
@@ -59,7 +57,7 @@ export async function createSubmission(
 
   const { data: submission, error: submissionError } = await supabase
     .from("submissions")
-    .insert({ nom, prenom, email, open_answer })
+    .insert({ nom, prenom, open_answer })
     .select()
     .single();
 

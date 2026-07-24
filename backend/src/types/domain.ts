@@ -26,7 +26,6 @@ export interface Submission {
   id: string;
   nom: string;
   prenom: string;
-  email: string;
   open_answer: string | null;
   created_at: string;
 }
@@ -50,7 +49,6 @@ export interface AnswerInput {
 export interface SubmissionInput {
   nom: string;
   prenom: string;
-  email: string;
   open_answer?: string;
   answers: AnswerInput[];
 }

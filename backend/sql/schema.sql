@@ -28,10 +28,13 @@ create table if not exists submissions (
   id uuid primary key default gen_random_uuid(),
   nom text not null,
   prenom text not null,
-  email text not null,
   open_answer text,
   created_at timestamptz not null default now()
 );
+
+-- Migration: if the `submissions` table already exists with an `email` column
+-- (from before the email field was dropped from the survey), run:
+-- alter table submissions drop column if exists email;
 
 create table if not exists answers (
   id uuid primary key default gen_random_uuid(),
