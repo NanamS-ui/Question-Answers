@@ -22,7 +22,6 @@ export function PublicSurveyPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const [nom, setNom] = useState("");
-  const [prenom, setPrenom] = useState("");
   const [openAnswer, setOpenAnswer] = useState("");
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [explanations, setExplanations] = useState<Record<string, string>>({});
@@ -42,7 +41,6 @@ export function PublicSurveyPage() {
     try {
       await submitAnswers({
         nom,
-        prenom: prenom || undefined,
         open_answer: openAnswer || undefined,
         answers: Object.entries(answers).map(([question_id, value]) => ({
           question_id,
@@ -103,15 +101,6 @@ fampahalalam-baovao amin’ny tamban-tsera Fesiboky</p>
               value={nom}
               onChange={(e) => setNom(e.target.value)}
               required
-            />
-          </div>
-          <div className="input-icon-wrapper">
-            <UserRound size={18} className="input-icon" aria-hidden="true" />
-            <input
-              type="text"
-              placeholder="Prénom (optionnel)"
-              value={prenom}
-              onChange={(e) => setPrenom(e.target.value)}
             />
           </div>
         </fieldset>
