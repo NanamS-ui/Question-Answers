@@ -1,4 +1,4 @@
-import { AlertCircle, ClipboardList, Layers, Loader2, Plus, Trash2 } from "lucide-react";
+import { AlertCircle, BarChart3, ClipboardList, Layers, Loader2, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createQuestionnaire, deleteQuestionnaire, listQuestionnaires } from "../../api/admin";
@@ -96,15 +96,24 @@ export function AdminDashboardPage() {
                 </Link>
                 <span className="submission-meta"> — {q.questions.length} question(s)</span>
                 {!q.is_active && <span className="badge">inactif</span>}
+                <p className="questionnaire-description">
+                  {q.questions[0]?.libelle ?? "Aucune question ajoutée pour l'instant."}
+                </p>
               </div>
-              <button
-                type="button"
-                className="btn-danger"
-                onClick={() => handleDelete(q.id, `Question ${index + 1}`)}
-              >
-                <Trash2 size={16} aria-hidden="true" />
-                Supprimer
-              </button>
+              <div className="question-item-actions">
+                <Link to={`/admin/questionnaires/${q.id}/results`} className="btn-ghost">
+                  <BarChart3 size={16} aria-hidden="true" />
+                  Voir résultats
+                </Link>
+                <button
+                  type="button"
+                  className="btn-danger"
+                  onClick={() => handleDelete(q.id, `Question ${index + 1}`)}
+                >
+                  <Trash2 size={16} aria-hidden="true" />
+                  Supprimer
+                </button>
+              </div>
             </li>
           ))}
         </ul>

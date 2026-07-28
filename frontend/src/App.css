@@ -459,6 +459,17 @@ textarea {
   min-width: 0;
 }
 
+.question-item-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .question-item-heading {
   display: flex;
   align-items: center;

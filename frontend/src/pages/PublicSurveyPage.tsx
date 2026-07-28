@@ -131,7 +131,7 @@ fampahalalam-baovao amin’ny tamban-tsera Fesiboky</p>
           >
             <div className="questionnaire-heading">
               <span className="questionnaire-index">{index + 1}</span>
-              <h2>Question {index + 1}</h2>
+              <h2>Fanontaniana {index + 1}</h2>
             </div>
             {questionnaire.questions.map((question) => (
               <QuestionField
