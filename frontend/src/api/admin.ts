@@ -39,6 +39,17 @@ export function addQuestion(questionnaireId: string, input: QuestionInput) {
   });
 }
 
+export function updateQuestion(
+  questionnaireId: string,
+  questionId: string,
+  input: QuestionInput
+) {
+  return apiFetch(
+    `/api/admin/questionnaires/${questionnaireId}/questions/${questionId}`,
+    { method: "PUT", body: JSON.stringify(input) }
+  );
+}
+
 export function deleteQuestion(questionnaireId: string, questionId: string) {
   return apiFetch<void>(
     `/api/admin/questionnaires/${questionnaireId}/questions/${questionId}`,
