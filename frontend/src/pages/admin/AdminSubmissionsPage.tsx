@@ -43,8 +43,7 @@ export function AdminSubmissionsPage() {
     !normalizedSearch || `${s.prenom} ${s.nom}`.toLowerCase().includes(normalizedSearch);
 
   const commentedSubmissions = submissions.filter((s) => s.open_answer?.trim() && matchesSearch(s));
-  const hasAnyData =
-    questionnaires.some((q) => q.questions.length > 0) || submissions.some((s) => s.open_answer?.trim());
+  const hasAnyData = submissions.length > 0;
 
   const tables = questionnaires
     .filter((q) => q.questions.length > 0)
@@ -99,7 +98,7 @@ export function AdminSubmissionsPage() {
         </div>
       ) : (
         <>
-          {tables.map(({ questionnaire, relevantSubmissions }) => {
+          {tables.map(({ questionnaire, relevantSubmissions }, index) => {
             const totalPages = Math.ceil(relevantSubmissions.length / PAGE_SIZE);
             const page = getPage(questionnaire.id, totalPages);
             const pageRows = relevantSubmissions.slice(
@@ -109,7 +108,7 @@ export function AdminSubmissionsPage() {
 
             return (
               <section key={questionnaire.id} className="table-section">
-                <h2>{questionnaire.title}</h2>
+                <h2>Question {index + 1}</h2>
                 <p className="submission-meta">
                   {relevantSubmissions.length} réponse{relevantSubmissions.length > 1 ? "s" : ""}
                 </p>
@@ -137,13 +136,17 @@ export function AdminSubmissionsPage() {
                               </div>
                             </td>
                             <td>{new Date(submission.created_at).toLocaleString()}</td>
-                            {questionnaire.questions.map((q) => (
-                              <td key={q.id}>
-                                {formatValue(
-                                  submission.answers.find((a) => a.question_id === q.id)?.value
-                                )}
-                              </td>
-                            ))}
+                            {questionnaire.questions.map((q) => {
+                              const answer = submission.answers.find((a) => a.question_id === q.id);
+                              return (
+                                <td key={q.id}>
+                                  {formatValue(answer?.value)}
+                                  {answer?.explanation && (
+                                    <div className="answer-explanation">{answer.explanation}</div>
+                                  )}
+                                </td>
+                              );
+                            })}
                           </tr>
                         ))}
                       </tbody>

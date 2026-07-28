@@ -8,7 +8,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { addQuestion, deleteQuestion, getQuestionnaire } from "../../api/admin";
 import type { QuestionnaireWithQuestions, QuestionType } from "../../types/domain";
 
@@ -20,12 +20,15 @@ const TYPE_LABELS: Record<QuestionType, string> = {
 
 export function AdminQuestionnaireDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [questionnaire, setQuestionnaire] = useState<QuestionnaireWithQuestions | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [libelle, setLibelle] = useState("");
   const [type, setType] = useState<QuestionType>("radio");
   const [options, setOptions] = useState(["", ""]);
+  const [otherIndex, setOtherIndex] = useState<number | null>(null);
+  const [isExplanation, setIsExplanation] = useState(false);
   const [saving, setSaving] = useState(false);
 
   async function refresh() {
@@ -46,7 +49,9 @@ export function AdminQuestionnaireDetailPage() {
     e.preventDefault();
     if (!id || !libelle.trim()) return;
 
-    const cleanedOptions = options.map((o) => o.trim()).filter(Boolean);
+    const cleanedOptions = options
+      .map((o, i) => ({ value: o.trim(), is_other: otherIndex === i }))
+      .filter((o) => o.value);
     if (cleanedOptions.length < 2) {
       setError("Il faut au moins 2 options");
       return;
@@ -55,11 +60,15 @@ export function AdminQuestionnaireDetailPage() {
     setSaving(true);
     try {
       setError(null);
-      await addQuestion(id, { libelle, type, options: cleanedOptions });
-      setLibelle("");
-      setType("radio");
-      setOptions(["", ""]);
-      await refresh();
+      await addQuestion(id, {
+        libelle,
+        type,
+        options: cleanedOptions,
+        is_explanation: isExplanation,
+      });
+      // A questionnaire holds a single question, so once it's added there's
+      // nothing left to do here.
+      navigate("/admin");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur inconnue");
     } finally {
@@ -94,8 +103,7 @@ export function AdminQuestionnaireDetailPage() {
           <ArrowLeft size={16} aria-hidden="true" /> Retour
         </Link>
       </p>
-      <h1>{questionnaire.title}</h1>
-      {questionnaire.description && <p className="questionnaire-description">{questionnaire.description}</p>}
+      <h1>Questions</h1>
       <p className="section-link">
         <Link to={`/admin/questionnaires/${questionnaire.id}/results`}>
           <BarChart3 size={16} aria-hidden="true" />
@@ -103,7 +111,6 @@ export function AdminQuestionnaireDetailPage() {
         </Link>
       </p>
 
-      <h2>Questions</h2>
       {questionnaire.questions.length === 0 ? (
         <div className="empty-state">
           <HelpCircle size={32} aria-hidden="true" />
@@ -117,11 +124,13 @@ export function AdminQuestionnaireDetailPage() {
                 <div className="question-item-heading">
                   <span className="question-index">{index + 1}</span>
                   <strong>{q.libelle}</strong>
+                  {q.is_explanation && <span className="badge">explication demandée</span>}
                 </div>
                 <div className="option-chip-list">
                   {q.options.map((option) => (
-                    <span key={option} className="option-chip">
-                      {option}
+                    <span key={option.value} className="option-chip">
+                      {option.value}
+                      {option.is_other && <span className="badge">autre</span>}
                     </span>
                   ))}
                 </div>
@@ -162,16 +171,26 @@ export function AdminQuestionnaireDetailPage() {
         </select>
 
         {options.map((option, i) => (
-          <input
-            key={i}
-            type="text"
-            placeholder={`Option ${i + 1}`}
-            value={option}
-            disabled={saving}
-            onChange={(e) =>
-              setOptions((prev) => prev.map((o, idx) => (idx === i ? e.target.value : o)))
-            }
-          />
+          <div key={i} className="option-input-row">
+            <input
+              type="text"
+              placeholder={`Option ${i + 1}`}
+              value={option}
+              disabled={saving}
+              onChange={(e) =>
+                setOptions((prev) => prev.map((o, idx) => (idx === i ? e.target.value : o)))
+              }
+            />
+            <label className="option-other-toggle">
+              <input
+                type="checkbox"
+                checked={otherIndex === i}
+                disabled={saving}
+                onChange={(e) => setOtherIndex(e.target.checked ? i : null)}
+              />
+              « Autre »
+            </label>
+          </div>
         ))}
         <button
           type="button"
@@ -182,6 +201,16 @@ export function AdminQuestionnaireDetailPage() {
           <Plus size={14} aria-hidden="true" />
           Option
         </button>
+
+        <label className="option-choice">
+          <input
+            type="checkbox"
+            checked={isExplanation}
+            onChange={(e) => setIsExplanation(e.target.checked)}
+            disabled={saving}
+          />
+          Demander une explication du choix
+        </label>
 
         {error && (
           <p className="error fade-in">

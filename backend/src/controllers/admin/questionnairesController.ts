@@ -3,7 +3,7 @@ import { supabase } from "../../config/supabase";
 import { HttpError } from "../../middleware/errorHandler";
 import { Questionnaire } from "../../types/domain";
 import { attachQuestions } from "../../utils/questionnaires";
-import { assertValidQuestionType } from "../../utils/validation";
+import { assertValidQuestionType, normalizeOptions } from "../../utils/validation";
 
 export async function listQuestionnaires(
   _req: Request,
@@ -38,18 +38,15 @@ export async function getQuestionnaire(
 }
 
 export async function createQuestionnaire(
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const { title, description, is_active } = req.body;
-  if (!title || typeof title !== "string") {
-    return next(new HttpError(400, "title est requis"));
-  }
-
+  // A new questionnaire has no questions yet, so it starts inactive
+  // (addQuestion flips it active once it has at least one question).
   const { data, error } = await supabase
     .from("questionnaires")
-    .insert({ title, description, is_active: is_active ?? true })
+    .insert({ is_active: false })
     .select()
     .single();
 
@@ -62,11 +59,11 @@ export async function updateQuestionnaire(
   res: Response,
   next: NextFunction
 ) {
-  const { title, description, is_active } = req.body;
+  const { is_active } = req.body;
 
   const { data, error } = await supabase
     .from("questionnaires")
-    .update({ title, description, is_active })
+    .update({ is_active })
     .eq("id", req.params.id)
     .select()
     .single();
@@ -94,7 +91,7 @@ export async function addQuestion(
   res: Response,
   next: NextFunction
 ) {
-  const { libelle, type, options, position } = req.body;
+  const { libelle, type, position, is_explanation } = req.body;
 
   if (!libelle || typeof libelle !== "string") {
     return next(new HttpError(400, "libelle est requis"));
@@ -104,7 +101,8 @@ export async function addQuestion(
   } catch (err) {
     return next(err);
   }
-  if (!Array.isArray(options) || options.length < 2) {
+  const options = normalizeOptions(req.body.options);
+  if (!options || options.length < 2) {
     return next(
       new HttpError(400, "options doit contenir au moins 2 choix")
     );
@@ -118,11 +116,20 @@ export async function addQuestion(
       type,
       options,
       position: position ?? 0,
+      is_explanation: is_explanation ?? false,
     })
     .select()
     .single();
 
   if (error) return next(new HttpError(500, error.message));
+
+  // This questionnaire now has at least one question: make it visible publicly.
+  const { error: activateError } = await supabase
+    .from("questionnaires")
+    .update({ is_active: true })
+    .eq("id", req.params.id);
+
+  if (activateError) return next(new HttpError(500, activateError.message));
   res.status(201).json(data);
 }
 
@@ -131,7 +138,7 @@ export async function updateQuestion(
   res: Response,
   next: NextFunction
 ) {
-  const { libelle, type, options, position } = req.body;
+  const { libelle, type, position, is_explanation } = req.body;
 
   if (type !== undefined) {
     try {
@@ -141,9 +148,17 @@ export async function updateQuestion(
     }
   }
 
+  let options;
+  if (req.body.options !== undefined) {
+    options = normalizeOptions(req.body.options);
+    if (!options) {
+      return next(new HttpError(400, "options invalides"));
+    }
+  }
+
   const { data, error } = await supabase
     .from("questions")
-    .update({ libelle, type, options, position })
+    .update({ libelle, type, options, position, is_explanation })
     .eq("id", req.params.questionId)
     .select()
     .single();
@@ -163,5 +178,23 @@ export async function deleteQuestion(
     .eq("id", req.params.questionId);
 
   if (error) return next(new HttpError(500, error.message));
+
+  // If that was the last question, hide the questionnaire from the public site again.
+  const { count, error: countError } = await supabase
+    .from("questions")
+    .select("id", { count: "exact", head: true })
+    .eq("questionnaire_id", req.params.id);
+
+  if (countError) return next(new HttpError(500, countError.message));
+
+  if (count === 0) {
+    const { error: deactivateError } = await supabase
+      .from("questionnaires")
+      .update({ is_active: false })
+      .eq("id", req.params.id);
+
+    if (deactivateError) return next(new HttpError(500, deactivateError.message));
+  }
+
   res.status(204).send();
 }

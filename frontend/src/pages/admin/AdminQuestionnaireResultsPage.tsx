@@ -86,11 +86,8 @@ export function AdminQuestionnaireResultsPage() {
         heightLeft -= pageHeight;
       }
 
-      const filename = questionnaire.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-      pdf.save(`resultats-${filename || "questionnaire"}.pdf`);
+      const datePart = new Date().toISOString().slice(0, 10);
+      pdf.save(`resultats-questionnaire-${datePart}.pdf`);
     } finally {
       setExporting(false);
     }
@@ -182,7 +179,7 @@ export function AdminQuestionnaireResultsPage() {
       )}
 
       <div className="results-page" ref={reportRef}>
-        <h1>{questionnaire.title}</h1>
+        <h1>Résultats de la question</h1>
         <p className="results-summary">
           {relevantSubmissions.length} répondant{relevantSubmissions.length > 1 ? "s" : ""} au total
         </p>
@@ -198,7 +195,7 @@ export function AdminQuestionnaireResultsPage() {
             const answersForQuestion = allAnswers.filter(
               (a) => a.question_id === question.id
             );
-            const counts = new Map<string, number>(question.options.map((o) => [o, 0]));
+            const counts = new Map<string, number>(question.options.map((o) => [o.value, 0]));
             for (const answer of answersForQuestion) {
               const values = Array.isArray(answer.value) ? answer.value : [answer.value];
               for (const v of values) {
@@ -206,9 +203,9 @@ export function AdminQuestionnaireResultsPage() {
               }
             }
 
-            const chartData = question.options.map((label) => ({
-              label,
-              count: counts.get(label) ?? 0,
+            const chartData = question.options.map((option) => ({
+              label: option.value,
+              count: counts.get(option.value) ?? 0,
             }));
             const note = question.type === "checkbox" ? "plusieurs réponses possibles" : undefined;
 

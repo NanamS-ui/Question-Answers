@@ -71,6 +71,7 @@ export async function createSubmission(
           submission_id: submission.id,
           question_id: a.question_id,
           value: a.value,
+          explanation: a.explanation?.trim() || null,
         }))
       )
       .select();

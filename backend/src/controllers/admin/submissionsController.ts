@@ -20,7 +20,7 @@ export async function listSubmissions(
 
   const { data: answers, error: answersError } = await supabase
     .from("answers")
-    .select("*, questions(libelle, questionnaire_id, questionnaires(title))")
+    .select("*, questions(libelle, questionnaire_id)")
     .in("submission_id", submissionIds);
 
   if (answersError) return next(new HttpError(500, answersError.message));

@@ -13,7 +13,7 @@ export function AdminLayout() {
         <nav className="admin-nav-links">
           <NavLink to="/admin" end>
             <ListChecks size={16} aria-hidden="true" />
-            Questionnaires
+            Questions
           </NavLink>
           <NavLink to="/admin/submissions">
             <MessagesSquare size={16} aria-hidden="true" />

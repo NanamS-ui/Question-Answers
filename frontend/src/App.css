@@ -215,6 +215,28 @@ form {
   margin-bottom: 1.5rem;
 }
 
+.option-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.option-input-row input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.option-other-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 textarea {
   resize: vertical;
   min-height: 4rem;
@@ -290,6 +312,19 @@ textarea {
   color: var(--text-h);
 }
 
+.explanation-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.explanation-field label {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
 .label-icon {
   color: var(--text-muted);
   flex-shrink: 0;
@@ -311,6 +346,16 @@ textarea {
 
 .input-icon-wrapper input {
   padding-left: 2.5rem;
+}
+
+.option-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.option-other-input {
+  margin-left: 2.1rem;
 }
 
 .option-choice {
@@ -498,6 +543,13 @@ table.data-table tbody tr:last-child td {
 
 table.data-table tbody tr:hover {
   background: rgba(91, 79, 233, 0.06);
+}
+
+.answer-explanation {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-style: italic;
 }
 
 .respondent-cell {

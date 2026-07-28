@@ -25,6 +25,7 @@ export function PublicSurveyPage() {
   const [prenom, setPrenom] = useState("");
   const [openAnswer, setOpenAnswer] = useState("");
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
+  const [explanations, setExplanations] = useState<Record<string, string>>({});
 
   useEffect(() => {
     listActiveQuestionnaires()
@@ -46,6 +47,7 @@ export function PublicSurveyPage() {
         answers: Object.entries(answers).map(([question_id, value]) => ({
           question_id,
           value,
+          explanation: explanations[question_id] || undefined,
         })),
       });
       setSubmitted(true);
@@ -86,7 +88,8 @@ export function PublicSurveyPage() {
           <ClipboardList size={26} aria-hidden="true" />
         </Link>
         <h1>Rijam-panontaniana</h1>
-        <p className="subtitle">ho an'ny Vahoaka Ankapobeny momba ny anjara asan'ny IB-C manoloana ny vanim-potoana nomerika</p>
+        <p className="subtitle">entina hanaporofoina sy hikirakirana ny fisarihan’ny votoaty
+fampahalalam-baovao amin’ny tamban-tsera Fesiboky</p>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -128,11 +131,8 @@ export function PublicSurveyPage() {
           >
             <div className="questionnaire-heading">
               <span className="questionnaire-index">{index + 1}</span>
-              <h2>{questionnaire.title}</h2>
+              <h2>Question {index + 1}</h2>
             </div>
-            {questionnaire.description && (
-              <p className="questionnaire-description">{questionnaire.description}</p>
-            )}
             {questionnaire.questions.map((question) => (
               <QuestionField
                 key={question.id}
@@ -140,6 +140,10 @@ export function PublicSurveyPage() {
                 value={answers[question.id]}
                 onChange={(value) =>
                   setAnswers((prev) => ({ ...prev, [question.id]: value }))
+                }
+                explanation={explanations[question.id]}
+                onExplanationChange={(explanation) =>
+                  setExplanations((prev) => ({ ...prev, [question.id]: explanation }))
                 }
               />
             ))}
@@ -149,8 +153,9 @@ export function PublicSurveyPage() {
         <div className="card fade-in-up">
           <div className="question-field">
             <label htmlFor="open-answer">
-              <MessageSquare size={16} className="label-icon" aria-hidden="true" />
-              Un commentaire à ajouter ?
+              <MessageSquare size={30} className="label-icon" aria-hidden="true" />
+              Araka ny hevitrao, inona no tokony ataon’ny vondrona fahitalavitra I-BC mba
+hanatsarana ny fampielezan’izy ireo vaovao amin’ny Pejy Fesiboky ? 
             </label>
             <textarea
               id="open-answer"

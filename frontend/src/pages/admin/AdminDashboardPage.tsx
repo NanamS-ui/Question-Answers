@@ -1,12 +1,14 @@
 import { AlertCircle, ClipboardList, Layers, Loader2, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { deleteQuestionnaire, listQuestionnaires } from "../../api/admin";
+import { Link, useNavigate } from "react-router-dom";
+import { createQuestionnaire, deleteQuestionnaire, listQuestionnaires } from "../../api/admin";
 import type { QuestionnaireWithQuestions } from "../../types/domain";
 
 export function AdminDashboardPage() {
+  const navigate = useNavigate();
   const [questionnaires, setQuestionnaires] = useState<QuestionnaireWithQuestions[]>([]);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function refresh() {
@@ -24,8 +26,20 @@ export function AdminDashboardPage() {
     refresh();
   }, []);
 
-  async function handleDelete(id: string, title: string) {
-    if (!window.confirm(`Supprimer le questionnaire "${title}" ? Cette action est irréversible.`)) {
+  async function handleCreate() {
+    setCreating(true);
+    try {
+      setError(null);
+      const created = await createQuestionnaire({});
+      navigate(`/admin/questionnaires/${created.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur inconnue");
+      setCreating(false);
+    }
+  }
+
+  async function handleDelete(id: string, label: string) {
+    if (!window.confirm(`Supprimer "${label}" ? Cette action est irréversible.`)) {
       return;
     }
     await deleteQuestionnaire(id);
@@ -35,11 +49,15 @@ export function AdminDashboardPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Questionnaires</h1>
-        <Link to="/admin/new" className="btn-primary">
-          <Plus size={18} aria-hidden="true" />
-          Nouveau questionnaire
-        </Link>
+        <h1>Les questions</h1>
+        <button type="button" className="btn-primary" onClick={handleCreate} disabled={creating}>
+          {creating ? (
+            <Loader2 size={18} className="icon-spin" aria-hidden="true" />
+          ) : (
+            <Plus size={18} aria-hidden="true" />
+          )}
+          Nouveau question
+        </button>
       </div>
 
       {error && (
@@ -57,11 +75,15 @@ export function AdminDashboardPage() {
       ) : questionnaires.length === 0 ? (
         <div className="empty-state">
           <Layers size={32} aria-hidden="true" />
-          <p>Aucun questionnaire pour le moment.</p>
-          <Link to="/admin/new" className="btn-primary">
-            <Plus size={18} aria-hidden="true" />
-            Créer le premier questionnaire
-          </Link>
+          <p>Aucune question pour le moment.</p>
+          <button type="button" className="btn-primary" onClick={handleCreate} disabled={creating}>
+            {creating ? (
+              <Loader2 size={18} className="icon-spin" aria-hidden="true" />
+            ) : (
+              <Plus size={18} aria-hidden="true" />
+            )}
+            Créer la première question
+          </button>
         </div>
       ) : (
         <ul className="questionnaire-list">
@@ -70,7 +92,7 @@ export function AdminDashboardPage() {
               <div>
                 <Link to={`/admin/questionnaires/${q.id}`}>
                   <ClipboardList size={16} aria-hidden="true" />
-                  <strong>{q.title}</strong>
+                  <strong>Question {index + 1}</strong>
                 </Link>
                 <span className="submission-meta"> — {q.questions.length} question(s)</span>
                 {!q.is_active && <span className="badge">inactif</span>}
@@ -78,7 +100,7 @@ export function AdminDashboardPage() {
               <button
                 type="button"
                 className="btn-danger"
-                onClick={() => handleDelete(q.id, q.title)}
+                onClick={() => handleDelete(q.id, `Question ${index + 1}`)}
               >
                 <Trash2 size={16} aria-hidden="true" />
                 Supprimer
