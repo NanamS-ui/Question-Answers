@@ -10,7 +10,6 @@ function assertValidInput(body: unknown): asserts body is SubmissionInput {
     throw new HttpError(400, "Corps de requête invalide");
   }
   if (!b.nom?.trim()) throw new HttpError(400, "nom est requis");
-  if (!b.prenom?.trim()) throw new HttpError(400, "prenom est requis");
   if (!Array.isArray(b.answers)) {
     throw new HttpError(400, "answers doit être un tableau");
   }
@@ -57,7 +56,7 @@ export async function createSubmission(
 
   const { data: submission, error: submissionError } = await supabase
     .from("submissions")
-    .insert({ nom, prenom, open_answer })
+    .insert({ nom, prenom: prenom?.trim() || null, open_answer })
     .select()
     .single();
 

@@ -29,7 +29,7 @@ export interface QuestionnaireWithQuestions extends Questionnaire {
 export interface Submission {
   id: string;
   nom: string;
-  prenom: string;
+  prenom: string | null;
   open_answer: string | null;
   created_at: string;
 }
@@ -54,7 +54,7 @@ export interface AnswerInput {
 
 export interface SubmissionInput {
   nom: string;
-  prenom: string;
+  prenom?: string;
   open_answer?: string;
   answers: AnswerInput[];
 }

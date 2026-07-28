@@ -42,7 +42,7 @@ export function PublicSurveyPage() {
     try {
       await submitAnswers({
         nom,
-        prenom,
+        prenom: prenom || undefined,
         open_answer: openAnswer || undefined,
         answers: Object.entries(answers).map(([question_id, value]) => ({
           question_id,
@@ -109,10 +109,9 @@ fampahalalam-baovao amin’ny tamban-tsera Fesiboky</p>
             <UserRound size={18} className="input-icon" aria-hidden="true" />
             <input
               type="text"
-              placeholder="Prénom"
+              placeholder="Prénom (optionnel)"
               value={prenom}
               onChange={(e) => setPrenom(e.target.value)}
-              required
             />
           </div>
         </fieldset>

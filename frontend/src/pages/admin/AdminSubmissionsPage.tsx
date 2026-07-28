@@ -12,6 +12,14 @@ function formatValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value.join(", ") : value;
 }
 
+function respondentName(s: SubmissionWithAnswers) {
+  return s.prenom ? `${s.prenom} ${s.nom}` : s.nom;
+}
+
+function respondentInitial(s: SubmissionWithAnswers) {
+  return (s.prenom || s.nom).charAt(0).toUpperCase();
+}
+
 export function AdminSubmissionsPage() {
   const [questionnaires, setQuestionnaires] = useState<QuestionnaireWithQuestions[]>([]);
   const [submissions, setSubmissions] = useState<SubmissionWithAnswers[]>([]);
@@ -40,7 +48,7 @@ export function AdminSubmissionsPage() {
 
   const normalizedSearch = search.trim().toLowerCase();
   const matchesSearch = (s: SubmissionWithAnswers) =>
-    !normalizedSearch || `${s.prenom} ${s.nom}`.toLowerCase().includes(normalizedSearch);
+    !normalizedSearch || respondentName(s).toLowerCase().includes(normalizedSearch);
 
   const commentedSubmissions = submissions.filter((s) => s.open_answer?.trim() && matchesSearch(s));
   const hasAnyData = submissions.length > 0;
@@ -130,9 +138,9 @@ export function AdminSubmissionsPage() {
                             <td>
                               <div className="respondent-cell">
                                 <span className="avatar" aria-hidden="true">
-                                  {submission.prenom.charAt(0).toUpperCase()}
+                                  {respondentInitial(submission)}
                                 </span>
-                                {submission.prenom} {submission.nom}
+                                {respondentName(submission)}
                               </div>
                             </td>
                             <td>{new Date(submission.created_at).toLocaleString()}</td>
@@ -195,9 +203,9 @@ export function AdminSubmissionsPage() {
                               <td>
                                 <div className="respondent-cell">
                                   <span className="avatar" aria-hidden="true">
-                                    {submission.prenom.charAt(0).toUpperCase()}
+                                    {respondentInitial(submission)}
                                   </span>
-                                  {submission.prenom} {submission.nom}
+                                  {respondentName(submission)}
                                 </div>
                               </td>
                               <td>{new Date(submission.created_at).toLocaleString()}</td>

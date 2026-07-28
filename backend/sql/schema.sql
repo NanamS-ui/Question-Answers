@@ -36,7 +36,7 @@ create index if not exists questions_questionnaire_id_idx on questions(questionn
 create table if not exists submissions (
   id uuid primary key default gen_random_uuid(),
   nom text not null,
-  prenom text not null,
+  prenom text,
   open_answer text,
   created_at timestamptz not null default now()
 );
@@ -44,6 +44,9 @@ create table if not exists submissions (
 -- Migration: if the `submissions` table already exists with an `email` column
 -- (from before the email field was dropped from the survey), run:
 -- alter table submissions drop column if exists email;
+
+-- Idempotent: prenom used to be required; drop that constraint if present.
+alter table submissions alter column prenom drop not null;
 
 create table if not exists answers (
   id uuid primary key default gen_random_uuid(),
