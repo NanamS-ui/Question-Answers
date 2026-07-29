@@ -168,11 +168,11 @@
 /* ---------- Public survey page ---------- */
 
 .hero {
-  background: linear-gradient(135deg, var(--primary-soft), var(--surface) 70%);
-  border: 1px solid var(--primary-soft-border);
+  background: var(--primary-gradient);
   border-radius: var(--radius-lg);
   padding: 2rem;
   margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-md);
 }
 @media (max-width: 480px) {
   .hero {
@@ -187,25 +187,26 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--surface);
-  color: var(--primary);
-  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.4);
   margin-bottom: 0.75rem;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s, background-color 0.15s;
 }
 .hero-icon:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.28);
   text-decoration: none;
 }
 
 .hero h1 {
   margin-bottom: 0.4rem;
+  color: #ffffff;
 }
 
 .subtitle {
   margin: 0;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 form {
@@ -553,7 +554,7 @@ table.data-table tbody tr:last-child td {
 }
 
 table.data-table tbody tr:hover {
-  background: rgba(91, 79, 233, 0.06);
+  background: rgba(219, 39, 119, 0.06);
 }
 
 .answer-explanation {

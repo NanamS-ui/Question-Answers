@@ -1,16 +1,17 @@
 :root {
-  --bg: #faf9fd;
+  --bg: #fdf6f9;
   --surface: #ffffff;
-  --text: #4b4558;
-  --text-h: #1f1b2e;
-  --text-muted: #8b8598;
-  --border: #e7e3f0;
+  --text: #5c4452;
+  --text-h: #341a26;
+  --text-muted: #9c7f8c;
+  --border: #f3dbe6;
 
-  --primary: #5b4fe9;
-  --primary-hover: #4b3fd9;
-  --primary-active: #3e33c4;
-  --primary-soft: #eeecfd;
-  --primary-soft-border: #c7c1f5;
+  --primary: #db2777;
+  --primary-hover: #be185d;
+  --primary-active: #9d174d;
+  --primary-soft: #fce7f3;
+  --primary-soft-border: #f9a8d4;
+  --primary-gradient: linear-gradient(135deg, #9d174d 0%, #db2777 50%, #f472b6 100%);
   --on-primary: #ffffff;
 
   --success: #16a34a;
@@ -19,8 +20,8 @@
   --danger-soft: #fde8ed;
   --danger-border: #f6c3ce;
 
-  --shadow-sm: 0 1px 2px rgba(31, 27, 46, 0.06), 0 1px 3px rgba(31, 27, 46, 0.08);
-  --shadow-md: 0 4px 6px rgba(31, 27, 46, 0.05), 0 12px 20px -6px rgba(31, 27, 46, 0.12);
+  --shadow-sm: 0 1px 2px rgba(60, 20, 45, 0.06), 0 1px 3px rgba(60, 20, 45, 0.08);
+  --shadow-md: 0 4px 6px rgba(60, 20, 45, 0.05), 0 12px 20px -6px rgba(60, 20, 45, 0.12);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -49,18 +50,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #17151f;
-    --surface: #1f1c2b;
-    --text: #c7c2d6;
-    --text-h: #f3f1fa;
-    --text-muted: #8e88a0;
-    --border: #322d45;
+    --bg: #1a1216;
+    --surface: #241820;
+    --text: #d8c3cd;
+    --text-h: #f7eef2;
+    --text-muted: #a3899a;
+    --border: #3d2530;
 
-    --primary: #9186ff;
-    --primary-hover: #a79cff;
-    --primary-active: #b6adff;
-    --primary-soft: #2b2550;
-    --primary-soft-border: #4b3f8c;
+    --primary: #f472b6;
+    --primary-hover: #f9a8d4;
+    --primary-active: #fbcfe8;
+    --primary-soft: #4a1d34;
+    --primary-soft-border: #7a3355;
+    --primary-gradient: linear-gradient(135deg, #831843 0%, #db2777 50%, #f472b6 100%);
     --on-primary: #ffffff;
 
     --success: #4ade80;
@@ -239,7 +241,7 @@ button:disabled {
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: var(--primary-gradient);
   border-color: var(--primary);
   color: var(--on-primary);
   box-shadow: var(--shadow-sm);
